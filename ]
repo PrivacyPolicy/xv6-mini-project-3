@@ -9,6 +9,7 @@
 int
 exec(char *path, char **argv)
 {
+  //cprintf("First (exec)\n");
   char *s, *last;
   int i, off;
   uint argc, sz, sp, ustack[3+MAXARG+1];
@@ -32,16 +33,21 @@ exec(char *path, char **argv)
     goto bad;
 
   // Load program into memory.
-  sz = PGSIZE;
+  sz = 0;
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
+    //cprintf("[%d] ip=%d, proghdr=, szph=%d\n", proc->pid, ip, sizeof(ph));
     if(readi(ip, (char*)&ph, off, sizeof(ph)) != sizeof(ph))
       goto bad;
+    //cprintf("[%d] i");
     if(ph.type != ELF_PROG_LOAD)
       continue;
     if(ph.memsz < ph.filesz)
       goto bad;
-    if((sz = allocuvm(pgdir, sz, ph.va + ph.memsz)) == 0)
+    //cprintf("[%d] {pgdir=%p, sz=%d ph.va=%d, ph.memsz=%d\n",
+    //        proc->pid, pgdir, (uint)sz, ph.va, ph.memsz);
+    if((sz = allocuvm(pgdir, sz + PGSIZE, ph.va + ph.memsz + PGSIZE)) == 0)
       goto bad;
+    //cprintf("sz=%d}\n", sz);
     if(loaduvm(pgdir, (char*)ph.va, ip, ph.offset, ph.filesz) < 0)
       goto bad;
   }
