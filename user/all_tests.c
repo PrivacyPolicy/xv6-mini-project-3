@@ -123,3 +123,37 @@ void test_passed()
   test_passed();
   exit();
 }*/
+
+
+/*int main (int argc, char* argv[])
+{
+  int n;
+  int i;
+
+  for (i = 0; i < 4; i++) {
+     n = shmem_count(i);
+     if (n != 0) {
+       test_failed();
+     }
+  }
+  test_passed();
+  exit();
+}*/
+
+
+int
+main(int argc, char* argv[])
+{
+  char* ptr;
+  int i;
+  for (i = 3; i >= 0; i--) {
+    printf(1, "i=%d\n", i);
+    ptr = shmem_access(i);
+    if (ptr == NULL) {
+      test_failed();
+    }
+    *ptr = 'c';
+  }
+  test_passed();
+  exit();
+}

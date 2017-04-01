@@ -25,5 +25,6 @@ int sys_write(void);
 int sys_uptime(void);
 int sys_shmem_access(void);
 int sys_shmem_count(void);
+int sys_shmem_init(void);
 
 #endif // _SYSFUNC_H_

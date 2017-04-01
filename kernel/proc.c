@@ -68,6 +68,13 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  p->shared_page_count = 0;
+  int i = 0;
+  for (; i < 4; i++)
+  {
+    p->shared_pages[i] = NULL;
+  }
+
   return p;
 }
 
@@ -156,6 +163,14 @@ fork(void)
   pid = np->pid;
   np->state = RUNNABLE;
   safestrcpy(np->name, proc->name, sizeof(proc->name));
+
+  np->shared_page_count = proc->shared_page_count;
+  i = 0;
+  for (; i < 4; i++)
+  {
+    np->shared_pages[i] = proc->shared_pages[i];
+  }
+
   return pid;
 }
 
@@ -223,6 +238,14 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
+
+	// insert majic function here
+        int ind = 0;
+        for (; ind < 4; ind++)
+        {
+          proc->shared_child_pages[ind] = p->shared_pages[ind];
+        }
+
         freevm(p->pgdir);
         p->state = UNUSED;
         p->pid = 0;

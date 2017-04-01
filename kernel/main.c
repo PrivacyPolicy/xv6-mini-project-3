@@ -11,6 +11,9 @@ void jmpkstack(void)  __attribute__((noreturn));
 void mainc(void);
 static void cinit(void);
 
+//extern int count_shared_pages[4];
+//extern void* shared_pages_addresses[4];
+
 // Bootstrap processor starts running C code here.
 // Allocate a real stack and switch to it, first
 // doing some setup required for memory allocator to work.
@@ -62,6 +65,8 @@ mainc(void)
   cinit();
   sti();           // enable inturrupts
   userinit();      // first user process
+  // init shared memory variables
+  shmem_init();
   scheduler();     // start running processes
 }
 
