@@ -160,7 +160,7 @@ main(int argc, char* argv[])
 
 #define USERTOP 0xA0000 // end of user address space
 
-int main(int argc, char* argv[])
+/*int main(int argc, char* argv[])
 {
   char *ptr;
   int i;
@@ -206,6 +206,80 @@ int main(int argc, char* argv[])
   if (n != -1) {
     printf(1, "write system call successfully accepted an overflowing pointer in a shared page\n");
     test_failed();
+  }
+
+  test_passed();
+  exit();
+}*/
+
+
+/*int
+main (int argc, char* argvp[])
+{
+  int n;
+  n = shmem_count(-1);
+  if (n!= -1) test_failed();
+  n = shmem_count(-100);
+  if (n!=-1) test_failed();
+  n = shmem_count(4);
+  if (n!=-1) test_failed();
+  n = shmem_count(100);
+  if (n!= -1) test_failed();
+  test_passed();
+  exit();
+}*/
+
+/*int main(int argc, char* argv[])
+{
+  void *ptr;
+  int n;
+  int i;
+  for (i = 0; i < 4; i++) {
+    ptr = shmem_access(i);
+    if (ptr == NULL) test_failed();
+    n  = shmem_count(i);
+    if (n!=1) test_failed();
+  }
+  test_passed();
+  exit();
+}*/
+
+/*int main(int argc, char* argv[])
+{
+  void *ptr;
+  int n;
+  int i;
+  for(i = 0; i < 4; i++) {
+    ptr = shmem_access(i);
+    if (ptr == NULL) test_failed();
+    ptr = shmem_access(i);
+    if (ptr == NULL) test_failed();
+    n = shmem_count(i);
+    if (n!= 1) test_failed();
+  }
+  test_passed();
+  exit();
+}*/
+
+int main(int argc, char* argv[])
+{
+  void *ptr;
+  int n;
+  int i;
+  for (i = 0; i < 4; i++) {
+    ptr = shmem_access(i);
+    if (ptr == NULL) test_failed();
+  }
+  int pid = fork();
+  if (pid < 0) {
+    test_failed();
+  } else if (pid == 0) {
+    for (i = 0; i < 4; i++) {
+      n = shmem_count(i);
+      if (n != 2) test_failed();
+    }
+  } else {
+    wait();
   }
 
   test_passed();
