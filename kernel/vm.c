@@ -364,3 +364,15 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   }
   return 0;
 }
+
+void*
+shmem_access(int page_number)
+{
+  return NULL;
+}
+
+int
+shmem_count(int page_number)
+{
+  return 0;
+}
