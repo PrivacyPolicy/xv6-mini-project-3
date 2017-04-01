@@ -97,7 +97,7 @@ void test_passed()
 }
 
 
-int main (int argc, char* argv[])
+/*int main (int argc, char* argv[])
 {
   void *ptr;
   ptr = shmem_access(-1);
@@ -122,4 +122,4 @@ int main (int argc, char* argv[])
   
   test_passed();
   exit();
-}
+}*/
