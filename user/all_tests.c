@@ -141,7 +141,7 @@ void test_passed()
 }*/
 
 
-int
+/*int
 main(int argc, char* argv[])
 {
   char* ptr;
@@ -154,6 +154,60 @@ main(int argc, char* argv[])
     }
     *ptr = 'c';
   }
+  test_passed();
+  exit();
+}*/
+
+#define USERTOP 0xA0000 // end of user address space
+
+int main(int argc, char* argv[])
+{
+  char *ptr;
+  int i;
+
+  ptr = shmem_access(3);
+  if (ptr == NULL) test_failed();
+  
+  char arr[4] = "tmp";
+  for (i = 0; i < 4; i++) {
+    *(ptr+i) = arr[i];
+  }
+
+  //argstr
+  int fd = open(ptr, O_WRONLY|O_CREATE);
+  if (fd == -1) {
+    printf(1, "open system call faeild to take a string from within a shared page\n");
+    test_failed();
+  }
+
+  //argptr
+  int n = write(fd, ptr, 10);
+  if (n == -1) {
+    printf(1, "write system call failed to take a pointer from within a shared page\n");
+    test_failed();
+  }
+
+  //making sure invalid strings are still caught
+  int fd2 = open((char *)(USERTOP/2), O_WRONLY|O_CREATE);
+  if (fd2 != -1) {
+    printf(1, "open system call successfully accepted an invalid string\n");
+    test_failed();
+  }
+
+  //making sure invalid pointers are still caught
+  n = write(fd, (char *) (USERTOP/2), 10);
+  if (n != -1) {
+    printf(1, "write system call successfully accepted an invalid pointer\n");
+    test_failed();
+  }
+ 
+  //making sure edge case is checked
+  n = write(fd, (char*)(ptr+4094), 10);
+  if (n != -1) {
+    printf(1, "write system call successfully accepted an overflowing pointer in a shared page\n");
+    test_failed();
+  }
+
   test_passed();
   exit();
 }
