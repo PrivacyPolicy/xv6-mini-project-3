@@ -147,7 +147,7 @@ main(int argc, char* argv[])
   char* ptr;
   int i;
   for (i = 3; i >= 0; i--) {
-    printf(1, "i=%d\n", i);
+    //printf(1, "i=%d\n", i);
     ptr = shmem_access(i);
     if (ptr == NULL) {
       test_failed();

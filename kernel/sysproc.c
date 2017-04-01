@@ -92,13 +92,22 @@ sys_uptime(void)
 int
 sys_shmem_count(void)
 {
-  return 0;
+  int page_number;
+  if (argint(0, &page_number) < 0)
+  {
+    return -1;
+  } else
+  {
+    return shmem_count(page_number);
+  }
 }
 
 int
 sys_shmem_access(void)
 {
-  return 0;
+  int page_number;
+  if (argint(0, &page_number) < 0) return -1;
+  return (int) shmem_access(page_number);
 }
 
 
