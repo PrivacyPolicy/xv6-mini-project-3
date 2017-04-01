@@ -18,6 +18,7 @@ USER_PROGS := \
 	wc\
 	zombie\
 	testnullptr\
+	all_tests\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 
